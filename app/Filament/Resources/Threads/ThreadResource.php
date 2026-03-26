@@ -1,0 +1,139 @@
+<?php
+
+namespace App\Filament\Resources\Threads;
+
+use App\Models\Thread;
+use BackedEnum;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+
+class ThreadResource extends Resource
+{
+    protected static ?string $model = Thread::class;
+
+    protected static ?string $slug = 'threads';
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                TextInput::make('name')
+                    ->required(),
+
+                Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->searchable()
+                    ->required(),
+
+                Select::make('forum_id')
+                    ->relationship('forum', 'name')
+                    ->searchable()
+                    ->required(),
+
+                Select::make('charakter_id')
+                    ->relationship('charakter', 'name')
+                    ->searchable()
+                    ->required(),
+
+                TextEntry::make('created_at')
+                    ->label('Created Date')
+                    ->dateTime(),
+
+                TextEntry::make('updated_at')
+                    ->label('Last Modified Date')
+                    ->dateTime(),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('user.name')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('forum.name')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('charakter.name')
+                    ->searchable()
+                    ->sortable(),
+            ])
+            ->filters([
+                //
+            ])
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListThreads::route('/'),
+            'create' => Pages\CreateThread::route('/create'),
+            'edit' => Pages\EditThread::route('/{record}/edit'),
+        ];
+    }
+
+    /**
+     * @return Builder<Thread>
+     */
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['user', 'forum', 'charakter']);
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'user.name', 'forum.name', 'charakter.name'];
+    }
+
+    /**
+     * @param Thread $record
+     */
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        $details = [];
+
+        if ($record->user) {
+            $details['User'] = $record->user->name;
+        }
+
+        if ($record->forum) {
+            $details['Forum'] = $record->forum->name;
+        }
+
+        if ($record->charakter) {
+            $details['Charakter'] = $record->charakter->name;
+        }
+
+        return $details;
+    }
+}
