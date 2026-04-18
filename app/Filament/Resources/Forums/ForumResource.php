@@ -25,7 +25,8 @@ class ForumResource extends Resource
 
     protected static ?string $slug = 'forums';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Forum System';
 
     public static function form(Schema $schema): Schema
     {
@@ -55,29 +56,27 @@ class ForumResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'FORUM', 'field' => 'name', 'subfield' => 'category.name', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'forum'],
+                    ['label' => 'DESCRIPTION', 'field' => 'description', 'width' => 'col-span-12 md:col-span-6'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('description'),
-
+                    ->searchable(),
                 TextColumn::make('category.name')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array

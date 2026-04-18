@@ -25,7 +25,8 @@ class PostReportResource extends Resource
 
     protected static ?string $slug = 'post-reports';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Forum System';
 
     public static function form(Schema $schema): Schema
     {
@@ -56,27 +57,25 @@ class PostReportResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'REPORTED BY', 'field' => 'user.name', 'subfield' => 'reason', 'width' => 'col-span-12 md:col-span-8', 'icon' => 'report'],
+                    ['label' => 'POST ID', 'field' => 'post_id', 'width' => 'col-span-12 md:col-span-4'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('user.name')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('post_id'),
-
-                TextColumn::make('reason'),
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array

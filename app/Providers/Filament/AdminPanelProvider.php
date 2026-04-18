@@ -9,6 +9,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Enums\ThemeMode;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -28,9 +29,44 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => \Filament\Support\Colors\Color::hex('#f2ca50'),
             ])
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::HEAD_START,
+                fn () => new \Illuminate\Support\HtmlString('
+                    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400..700;1,400..700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+                    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+                ')
+            )
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::SIDEBAR_FOOTER,
+                fn () => view('filament.components.sidebar-footer')
+            )
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::FOOTER,
+                fn () => view('filament.components.footer')
+            )
+            ->navigationGroups([
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label('Forum System')
+                    ->icon('heroicon-o-chat-bubble-left-right'),
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label('Game Mechanics')
+                    ->icon('heroicon-o-book-open'),
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label('Gameplay')
+                    ->icon('heroicon-o-shield-check'),
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label('Communication')
+                    ->icon('heroicon-o-envelope-open'),
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label('Administration')
+                    ->icon('heroicon-o-cog-6-tooth'),
+            ])
+            ->darkMode(true)
+            ->defaultThemeMode(ThemeMode::Dark)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -38,8 +74,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                // Default widgets removed
             ])
             ->middleware([
                 EncryptCookies::class,

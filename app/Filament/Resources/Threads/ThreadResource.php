@@ -25,7 +25,8 @@ class ThreadResource extends Resource
 
     protected static ?string $slug = 'threads';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Forum System';
 
     public static function form(Schema $schema): Schema
     {
@@ -45,52 +46,39 @@ class ThreadResource extends Resource
                     ->required(),
 
                 Select::make('charakter_id')
+                    ->label('CHARACTER')
                     ->relationship('charakter', 'name')
                     ->searchable()
                     ->required(),
-
-                TextEntry::make('created_at')
-                    ->label('Created Date')
-                    ->dateTime(),
-
-                TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
-                    ->dateTime(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'THREAD TITLE', 'field' => 'name', 'subfield' => 'forum.name', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'topic'],
+                    ['label' => 'AUTHOR / CHAR', 'field' => 'user.name', 'subfield' => 'charakter.name', 'width' => 'col-span-12 md:col-span-6'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('user.name')
-                    ->searchable()
-                    ->sortable(),
-
+                    ->searchable(),
                 TextColumn::make('forum.name')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('charakter.name')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
+                TextColumn::make('user.name')
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array

@@ -25,7 +25,8 @@ class PostResource extends Resource
 
     protected static ?string $slug = 'posts';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Forum System';
 
     public static function form(Schema $schema): Schema
     {
@@ -45,48 +46,39 @@ class PostResource extends Resource
                     ->required(),
 
                 Select::make('charakter_id')
+                    ->label('CHARACTER')
                     ->relationship('charakter', 'name')
                     ->searchable()
                     ->required(),
-
-                TextEntry::make('created_at')
-                    ->label('Created Date')
-                    ->dateTime(),
-
-                TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
-                    ->dateTime(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'POST CONTENT', 'field' => 'content', 'subfield' => 'thread.name', 'width' => 'col-span-7', 'icon' => 'chat'],
+                    ['label' => 'AUTHOR / CHAR', 'field' => 'user.name', 'subfield' => 'charakter.name', 'width' => 'col-span-5'],
+                ]
+            ]))
             ->columns([
+                TextColumn::make('content')
+                    ->searchable(),
                 TextColumn::make('thread.name')
-                    ->searchable()
-                    ->sortable(),
-
+                    ->searchable(),
                 TextColumn::make('user.name')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('charakter.name')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array

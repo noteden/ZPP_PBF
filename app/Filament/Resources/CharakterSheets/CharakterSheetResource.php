@@ -24,7 +24,8 @@ class CharakterSheetResource extends Resource
 
     protected static ?string $slug = 'charakter-sheets';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Game Mechanics';
 
     public static function form(Schema $schema): Schema
     {
@@ -34,6 +35,11 @@ class CharakterSheetResource extends Resource
                     ->relationship('charakter', 'name')
                     ->searchable()
                     ->required(),
+
+                \Filament\Forms\Components\KeyValue::make('statistic')
+                    ->label('STATISTICS')
+                    ->required()
+                    ->columnSpanFull(),
 
                 TextEntry::make('created_at')
                     ->label('Created Date')
@@ -48,25 +54,27 @@ class CharakterSheetResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'CHARACTER', 'field' => 'charakter.name', 'subfield' => 'charakter.user.name', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'description'],
+                    ['label' => 'STATISTICS', 'field' => 'statistic', 'width' => 'col-span-12 md:col-span-6'],
+                ]
+            ]))
             ->columns([
-                TextColumn::make('statistic'),
-
                 TextColumn::make('charakter.name')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
+                TextColumn::make('charakter.user.name')
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array
