@@ -22,7 +22,12 @@ class EquipmentResource extends Resource
 
     protected static ?string $slug = 'equipment';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $modelLabel = 'Equipment';
+
+    protected static ?string $pluralModelLabel = 'Equipment';
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Game Mechanics';
 
     public static function form(Schema $schema): Schema
     {
@@ -41,12 +46,13 @@ class EquipmentResource extends Resource
                 TextInput::make('type')
                     ->required(),
 
+                \Filament\Forms\Components\KeyValue::make('statistic')
+                    ->label('STATISTICS')
+                    ->required()
+                    ->columnSpanFull(),
+
                 TextEntry::make('created_at')
                     ->label('Created Date')
-                    ->dateTime(),
-
-                TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
                     ->dateTime(),
             ]);
     }
@@ -54,31 +60,28 @@ class EquipmentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'EQUIPMENT', 'field' => 'name', 'subfield' => 'type', 'width' => 'col-span-12 md:col-span-4', 'icon' => 'swords'],
+                    ['label' => 'DESCRIPTION', 'field' => 'description', 'width' => 'col-span-12 md:col-span-5'],
+                    ['label' => 'WEIGHT', 'field' => 'weight', 'width' => 'col-span-12 md:col-span-3'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('description'),
-
-                TextColumn::make('weight'),
-
-                TextColumn::make('statistic'),
-
-                TextColumn::make('type'),
+                    ->searchable(),
+                TextColumn::make('type')
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array

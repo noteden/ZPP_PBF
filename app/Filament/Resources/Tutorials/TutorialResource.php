@@ -23,7 +23,8 @@ class TutorialResource extends Resource
 
     protected static ?string $slug = 'tutorials';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Administration';
 
     public static function form(Schema $schema): Schema
     {
@@ -48,23 +49,27 @@ class TutorialResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'TUTORIAL NAME', 'field' => 'name', 'width' => 'col-span-12 md:col-span-5', 'icon' => 'school'],
+                    ['label' => 'CONTENT PREVIEW', 'field' => 'content', 'width' => 'col-span-12 md:col-span-7'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
+                TextColumn::make('content')
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array

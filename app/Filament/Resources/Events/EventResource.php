@@ -26,7 +26,8 @@ class EventResource extends Resource
 
     protected static ?string $slug = 'events';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Gameplay';
 
     public static function form(Schema $schema): Schema
     {
@@ -61,34 +62,28 @@ class EventResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'EVENT NAME', 'field' => 'name', 'subfield' => 'date', 'width' => 'col-span-12 md:col-span-5', 'icon' => 'event'],
+                    ['label' => 'TYPE', 'field' => 'type', 'width' => 'col-span-12 md:col-span-3'],
+                    ['label' => 'ORGANIZER', 'field' => 'user.name', 'width' => 'col-span-12 md:col-span-4'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('description'),
-
+                    ->searchable(),
                 TextColumn::make('user.name')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('type'),
-
-                TextColumn::make('date')
-                    ->date(),
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array

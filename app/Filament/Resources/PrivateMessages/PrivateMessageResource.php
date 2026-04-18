@@ -26,7 +26,8 @@ class PrivateMessageResource extends Resource
 
     protected static ?string $slug = 'private-messages';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Communication';
 
     public static function form(Schema $schema): Schema
     {
@@ -60,29 +61,28 @@ class PrivateMessageResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'FROM / TO', 'field' => 'senderUser.name', 'subfield' => 'receiverUser.name', 'width' => 'col-span-12 md:col-span-4', 'icon' => 'mail'],
+                    ['label' => 'CONTENT PREVIEW', 'field' => 'content', 'width' => 'col-span-12 md:col-span-5'],
+                    ['label' => 'READ', 'field' => 'is_read', 'width' => 'col-span-12 md:col-span-3', 'type' => 'toggle'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('senderUser.name')
-                    ->searchable()
-                    ->sortable(),
-
+                    ->searchable(),
                 TextColumn::make('receiverUser.name')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('is_read'),
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array

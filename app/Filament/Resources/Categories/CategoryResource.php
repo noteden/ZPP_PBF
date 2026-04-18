@@ -6,7 +6,6 @@ use App\Models\Category;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
@@ -23,7 +22,8 @@ class CategoryResource extends Resource
 
     protected static ?string $slug = 'categories';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Forum System';
 
     public static function form(Schema $schema): Schema
     {
@@ -50,27 +50,30 @@ class CategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'NAME', 'field' => 'name', 'width' => 'col-span-12 md:col-span-5', 'icon' => 'menu_book'],
+                    ['label' => 'DESCRIPTION', 'field' => 'description', 'width' => 'col-span-12 md:col-span-4'],
+                    ['label' => 'ONLY FOR GM', 'field' => 'OnlyforGM', 'width' => 'col-span-12 md:col-span-3', 'type' => 'toggle'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('description'),
-
-                TextColumn::make('OnlyforGM'),
+                    ->searchable(),
+                TextColumn::make('description')
+                    ->searchable(),
             ])
+            ->paginated([10, 25, 50])
+            ->defaultPaginationPageOption(10)
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array
