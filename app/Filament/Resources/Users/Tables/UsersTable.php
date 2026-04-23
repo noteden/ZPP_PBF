@@ -17,8 +17,9 @@ class UsersTable
                 'records' => $records,
                 'headers' => [
                     ['label' => 'USER', 'field' => 'name', 'subfield' => 'email', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'person'],
-                    ['label' => 'VERIFIED AT', 'field' => 'email_verified_at', 'width' => 'col-span-12 md:col-span-3'],
-                    ['label' => 'JOINED', 'field' => 'created_at', 'width' => 'col-span-12 md:col-span-3'],
+                    ['label' => 'ROLA', 'field' => 'role', 'width' => 'col-span-12 md:col-span-2'],
+                    ['label' => 'VERIFIED AT', 'field' => 'email_verified_at', 'width' => 'col-span-12 md:col-span-2'],
+                    ['label' => 'JOINED', 'field' => 'created_at', 'width' => 'col-span-12 md:col-span-2'],
                 ]
             ]))
             ->columns([

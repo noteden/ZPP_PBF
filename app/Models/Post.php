@@ -2,16 +2,22 @@
 
 namespace App\Models;
 
+use App\Enums\PostTag;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 
-#[Fillable(['content', 'thread_id', 'user_id', 'charakter_id'])]
+#[Fillable(['content', 'thread_id', 'user_id', 'charakter_id', 'tag'])]
 class Post extends Model
 {
     use HasFactory;
+
+    protected function casts(): array
+    {
+        return ['tag' => PostTag::class];
+    }
 
     public function thread(): BelongsTo
     {

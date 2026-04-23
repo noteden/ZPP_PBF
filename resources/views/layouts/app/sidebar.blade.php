@@ -15,6 +15,36 @@
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="envelope" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
+                        Wiadomości
+                        @php $unreadMessages = auth()->user()?->receivedMessages()->where('is_read', false)->count() ?? 0; @endphp
+                        @if ($unreadMessages > 0)
+                            <flux:badge color="blue" size="sm" class="ms-auto">{{ $unreadMessages }}</flux:badge>
+                        @endif
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="bell" :href="route('notifications')" :current="request()->routeIs('notifications')" wire:navigate>
+                        Powiadomienia
+                        @php $unreadNotif = auth()->user()?->unreadNotifications()->count() ?? 0; @endphp
+                        @if ($unreadNotif > 0)
+                            <flux:badge color="red" size="sm" class="ms-auto">{{ $unreadNotif }}</flux:badge>
+                        @endif
+                    </flux:sidebar.item>
+
+                    @if (auth()->user()?->isModerator())
+                        <flux:sidebar.item icon="clock" :href="route('activity-log')" :current="request()->routeIs('activity-log')" wire:navigate>
+                            Log aktywności
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item icon="shield-check" :href="route('moderation')" :current="request()->routeIs('moderation')" wire:navigate>
+                            Moderacja
+                            @php $pending = \App\Models\PostReport::where('status', 'oczekujące')->count(); @endphp
+                            @if ($pending > 0)
+                                <flux:badge color="yellow" size="sm" class="ms-auto">{{ $pending }}</flux:badge>
+                            @endif
+                        </flux:sidebar.item>
+                    @endif
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 

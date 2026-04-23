@@ -2,15 +2,21 @@
 
 namespace App\Models;
 
+use App\Enums\ReportStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 
-#[Fillable(['user_id', 'post_id', 'reason'])]
+#[Fillable(['user_id', 'post_id', 'reason', 'status'])]
 class PostReport extends Model
 {
     use HasFactory;
+
+    protected function casts(): array
+    {
+        return ['status' => ReportStatus::class];
+    }
 
     public function user(): BelongsTo
     {
