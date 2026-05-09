@@ -57,6 +57,16 @@ class User extends Authenticatable
         return $this->isAdmin() || $this->isGameMaster();
     }
 
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class, 'badge_user', 'user_id', 'badge_id');
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class, 'user_id');
+    }
+
     public function getRoleLabel(): string
     {
         return $this->role->label();

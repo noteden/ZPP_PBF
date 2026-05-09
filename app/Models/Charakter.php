@@ -16,4 +16,8 @@ class Charakter extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function badges() {
+        return $this->belongsToMany(Badge::class);
+    }
 }

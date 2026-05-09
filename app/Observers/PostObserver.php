@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\ActivityLog;
 use App\Models\Post;
+use App\Models\Badge;
 use App\Notifications\NewThreadReply;
 
 class PostObserver
@@ -22,6 +23,22 @@ class PostObserver
         foreach ($participants as $user) {
             $user->notify(new NewThreadReply($post));
         }
+
+        $charakter = $post->charakter;
+        if (!$charakter || !$charakter->user) return;
+
+        $user = $charakter->user;
+
+        // Sprawdzamy, czy użytkownik MA JUŻ tę odznakę, zamiast liczyć posty.
+        // To jest bezpieczniejsze, bo odznaka zostanie przyznana tylko raz w życiu.
+        $badge = Badge::where('name', 'Pierwszy Post')->first();
+
+        if ($badge && !$user->badges()->where('badge_id', $badge->id)->exists()) {
+            // Przyznaj odznakę
+            $user->badges()->attach($badge->id);
+        }
+        dd("Observer działa!", $post->charakter->user->name);
+
     }
 
     public function updated(Post $post): void
