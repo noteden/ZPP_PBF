@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Enums\UserRole;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
@@ -19,6 +21,14 @@ class UserForm
                     ->label('Email address')
                     ->email()
                     ->required(),
+
+                Select::make('role')
+                    ->label('Rola')
+                    ->options(collect(UserRole::cases())->mapWithKeys(
+                        fn (UserRole $role) => [$role->value => $role->label()]
+                    ))
+                    ->required(),
+
                 DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
                     ->password()

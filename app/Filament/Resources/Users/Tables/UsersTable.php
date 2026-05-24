@@ -13,37 +13,27 @@ class UsersTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'USER', 'field' => 'name', 'subfield' => 'email', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'person'],
+                    ['label' => 'ROLA', 'field' => 'role', 'width' => 'col-span-12 md:col-span-2'],
+                    ['label' => 'VERIFIED AT', 'field' => 'email_verified_at', 'width' => 'col-span-12 md:col-span-2'],
+                    ['label' => 'JOINED', 'field' => 'created_at', 'width' => 'col-span-12 md:col-span-2'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
                     ->searchable(),
-                TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('two_factor_confirmed_at')
-                    ->dateTime()
-                    ->sortable(),
             ])
             ->filters([
                 //
             ])
+            ->bulkActions([])
             ->recordActions([
                 EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }
