@@ -21,7 +21,11 @@ class WorldLogResource extends Resource
 
     protected static ?string $slug = 'world-logs';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Gameplay';
+    protected static ?string $modelLabel = 'Kronika świata';
+
+    protected static ?string $pluralModelLabel = 'Kroniki świata';
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Rozgrywka';
 
     public static function form(Schema $schema): Schema
     {

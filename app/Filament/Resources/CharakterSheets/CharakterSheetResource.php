@@ -24,8 +24,12 @@ class CharakterSheetResource extends Resource
 
     protected static ?string $slug = 'charakter-sheets';
 
+    protected static ?string $modelLabel = 'Karta postaci';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Game Mechanics';
+    protected static ?string $pluralModelLabel = 'Karty postaci';
+
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Mechanika gry';
 
     public static function form(Schema $schema): Schema
     {
@@ -37,16 +41,16 @@ class CharakterSheetResource extends Resource
                     ->required(),
 
                 \Filament\Forms\Components\KeyValue::make('statistic')
-                    ->label('STATISTICS')
+                    ->label('STATYSTYKI')
                     ->required()
                     ->columnSpanFull(),
 
                 TextEntry::make('created_at')
-                    ->label('Created Date')
+                    ->label('Data utworzenia')
                     ->dateTime(),
 
                 TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
+                    ->label('Data modyfikacji')
                     ->dateTime(),
             ]);
     }
@@ -54,13 +58,6 @@ class CharakterSheetResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'CHARACTER', 'field' => 'charakter.name', 'subfield' => 'charakter.user.name', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'description'],
-                    ['label' => 'STATISTICS', 'field' => 'statistic', 'width' => 'col-span-12 md:col-span-6'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('charakter.name')
                     ->searchable(),

@@ -13,9 +13,10 @@ use Illuminate\Database\Eloquent\Builder;
 class LeaderboardResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $navigationLabel = 'Leaderboard';
-    protected static ?string $pluralModelLabel = 'Leaderboard';
-    protected static string | \UnitEnum | null $navigationGroup = 'Gameplay';
+    protected static ?string $navigationLabel = 'Ranking';
+    protected static ?string $modelLabel = 'Ranking';
+    protected static ?string $pluralModelLabel = 'Ranking';
+    protected static string | \UnitEnum | null $navigationGroup = 'Rozgrywka';
 
     public static function table(Table $table): Table
     {
@@ -50,15 +51,28 @@ class LeaderboardResource extends Resource
                     ->color('success')
                     ->state(fn ($record) => $record->posts_count + $record->badges_count + $record->sent_messages_count)
                     ->sortable(query: function (Builder $query, string $direction): Builder {
-                        return $query->orderByRaw('(posts_count + badges_count + sent_messages_count) ' . $direction);
+                        return $query->orderByRaw(self::scoreExpression() . ' ' . $direction);
                     }),
             ])
-            ->defaultSort(fn ($query) => $query->orderByRaw('(posts_count + badges_count + sent_messages_count) DESC'))
+            ->defaultSort(fn ($query) => $query->orderByRaw(self::scoreExpression() . ' DESC'))
             ->filters([])
             ->actions([])
             ->bulkActions([]);
 
 
+    }
+
+    /**
+     * Suma punktów liczona korelowanymi podzapytaniami — kompatybilne z PostgreSQL
+     * (aliasów z withCount nie można użyć wewnątrz wyrażenia ORDER BY).
+     */
+    protected static function scoreExpression(): string
+    {
+        return '('
+            . '(select count(*) from posts where posts.user_id = users.id)'
+            . ' + (select count(*) from badge_user where badge_user.user_id = users.id)'
+            . ' + (select count(*) from private_messages where private_messages.sender_user_id = users.id)'
+            . ')';
     }
 
     public static function getPages(): array

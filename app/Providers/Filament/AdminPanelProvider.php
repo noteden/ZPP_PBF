@@ -42,19 +42,19 @@ class AdminPanelProvider extends PanelProvider
             )
             ->navigationGroups([
                 \Filament\Navigation\NavigationGroup::make()
-                    ->label('Forum System')
+                    ->label('Forum')
                     ->icon('heroicon-o-chat-bubble-left-right'),
                 \Filament\Navigation\NavigationGroup::make()
-                    ->label('Game Mechanics')
+                    ->label('Mechanika gry')
                     ->icon('heroicon-o-book-open'),
                 \Filament\Navigation\NavigationGroup::make()
-                    ->label('Gameplay')
+                    ->label('Rozgrywka')
                     ->icon('heroicon-o-shield-check'),
                 \Filament\Navigation\NavigationGroup::make()
-                    ->label('Communication')
+                    ->label('Komunikacja')
                     ->icon('heroicon-o-envelope-open'),
                 \Filament\Navigation\NavigationGroup::make()
-                    ->label('Administration')
+                    ->label('Administracja')
                     ->icon('heroicon-o-cog-6-tooth'),
             ])
             ->darkMode(true)

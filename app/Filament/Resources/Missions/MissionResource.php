@@ -24,8 +24,11 @@ class MissionResource extends Resource
 
     protected static ?string $slug = 'missions';
 
+    protected static ?string $modelLabel = 'Misja';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Gameplay';
+    protected static ?string $pluralModelLabel = 'Misje';
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Rozgrywka';
 
     public static function form(Schema $schema): Schema
     {
@@ -52,11 +55,11 @@ class MissionResource extends Resource
                     ->searchable(),
 
                 TextEntry::make('created_at')
-                    ->label('Created Date')
+                    ->label('Data utworzenia')
                     ->dateTime(),
 
                 TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
+                    ->label('Data modyfikacji')
                     ->dateTime(),
             ]);
     }

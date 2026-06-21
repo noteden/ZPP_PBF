@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 
 class CategoryResource extends Resource
@@ -22,8 +23,12 @@ class CategoryResource extends Resource
 
     protected static ?string $slug = 'categories';
 
+    protected static ?string $modelLabel = 'Kategoria';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Forum System';
+    protected static ?string $pluralModelLabel = 'Kategorie';
+
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Forum';
 
     public static function form(Schema $schema): Schema
     {
@@ -38,11 +43,11 @@ class CategoryResource extends Resource
                 Checkbox::make('OnlyforGM'),
 
                 TextEntry::make('created_at')
-                    ->label('Created Date')
+                    ->label('Data utworzenia')
                     ->dateTime(),
 
                 TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
+                    ->label('Data modyfikacji')
                     ->dateTime(),
             ]);
     }
@@ -50,19 +55,13 @@ class CategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'NAME', 'field' => 'name', 'width' => 'col-span-12 md:col-span-5', 'icon' => 'menu_book'],
-                    ['label' => 'DESCRIPTION', 'field' => 'description', 'width' => 'col-span-12 md:col-span-4'],
-                    ['label' => 'ONLY FOR GM', 'field' => 'OnlyforGM', 'width' => 'col-span-12 md:col-span-3', 'type' => 'toggle'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('description')
                     ->searchable(),
+                ToggleColumn::make('OnlyforGM')
+                    ->label('TYLKO DLA MG'),
             ])
             ->paginated([10, 25, 50])
             ->defaultPaginationPageOption(10)

@@ -22,8 +22,12 @@ class ProfileResource extends Resource
 
     protected static ?string $slug = 'profiles';
 
+    protected static ?string $modelLabel = 'Profil';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Administration';
+    protected static ?string $pluralModelLabel = 'Profile';
+
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Administracja';
 
     public static function form(Schema $schema): Schema
     {
@@ -41,11 +45,11 @@ class ProfileResource extends Resource
                     ->integer(),
 
                 TextEntry::make('created_at')
-                    ->label('Created Date')
+                    ->label('Data utworzenia')
                     ->dateTime(),
 
                 TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
+                    ->label('Data modyfikacji')
                     ->dateTime(),
             ]);
     }

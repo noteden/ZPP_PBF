@@ -120,7 +120,7 @@
                                     name="code"
                                     wire:model="code"
                                     length="6"
-                                    label="OTP Code"
+                                    label="Kod OTP"
                                     label:sr-only
                                     class="mx-auto"
                                 />

@@ -25,12 +25,12 @@ class CharakterResource extends Resource
 
     protected static ?string $slug = 'charakters';
 
-    protected static ?string $modelLabel = 'Character';
+    protected static ?string $modelLabel = 'Postać';
 
-    protected static ?string $pluralModelLabel = 'Characters';
+    protected static ?string $pluralModelLabel = 'Postacie';
 
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Game Mechanics';
+    protected static string | \UnitEnum | null $navigationGroup = 'Mechanika gry';
 
     public static function form(Schema $schema): Schema
     {
@@ -43,7 +43,7 @@ class CharakterResource extends Resource
                     ->required(),
 
                 Select::make('origin')
-                    ->label('ORIGIN')
+                    ->label('POCHODZENIE')
                     ->options([
                         'Northern Kingdoms' => 'Northern Kingdoms',
                         'Southern Empires' => 'Southern Empires',
@@ -57,7 +57,7 @@ class CharakterResource extends Resource
                     ->required(),
 
                 Select::make('race')
-                    ->label('RACE')
+                    ->label('RASA')
                     ->options([
                         'Human' => 'Human',
                         'Elf' => 'Elf',
@@ -72,7 +72,7 @@ class CharakterResource extends Resource
                     ->required(),
 
                 Select::make('eyes')
-                    ->label('EYES')
+                    ->label('OCZY')
                     ->options([
                         'Amber' => 'Amber',
                         'Blue' => 'Blue',
@@ -88,25 +88,25 @@ class CharakterResource extends Resource
                     ->required(),
 
                 TextInput::make('hair')
-                    ->label('HAIR')
+                    ->label('WŁOSY')
                     ->required(),
 
                 TextInput::make('biography')
-                    ->label('BIOGRAPHY')
+                    ->label('BIOGRAFIA')
                     ->required(),
 
                 Select::make('user_id')
-                    ->label('USER')
+                    ->label('UŻYTKOWNIK')
                     ->relationship('user', 'name')
                     ->searchable()
                     ->required(),
 
                 TextEntry::make('created_at')
-                    ->label('Created Date')
+                    ->label('Data utworzenia')
                     ->dateTime(),
 
                 TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
+                    ->label('Data modyfikacji')
                     ->dateTime(),
             ]);
     }
@@ -114,14 +114,6 @@ class CharakterResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'CHARACTER', 'field' => 'name', 'subfield' => 'race', 'width' => 'col-span-12 md:col-span-5', 'icon' => 'person_book'],
-                    ['label' => 'ORIGIN', 'field' => 'origin', 'width' => 'col-span-12 md:col-span-4'],
-                    ['label' => 'PLAYER', 'field' => 'user.name', 'width' => 'col-span-12 md:col-span-3'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
@@ -131,17 +123,11 @@ class CharakterResource extends Resource
             ->filters([
                 //
             ])
-            ->emptyStateHeading(new \Illuminate\Support\HtmlString('
-                <style>.fi-ta-empty-state-icon-bg { display: none !important; }</style>
-                <div class="flex flex-col items-center justify-center -mt-8">
-                    <img src="/images/cloak-campfire.png" alt="Empty State Illustration" class="w-56 h-auto object-contain mx-auto mb-6 opacity-90 drop-shadow-[0_0_20px_rgba(245,158,11,0.15)]" />
-                    <span class="text-xl font-bold dark:text-white">No characters found</span>
-                </div>
-            '))
-            ->emptyStateDescription('Create your first character to begin your adventure.')
+            ->emptyStateHeading('Brak postaci')
+            ->emptyStateDescription('Stwórz pierwszą postać, aby rozpocząć przygodę.')
             ->emptyStateActions([
                 \Filament\Actions\CreateAction::make()
-                    ->label('Create your first character'),
+                    ->label('Stwórz pierwszą postać'),
             ])
             ->actions([
                 EditAction::make(),

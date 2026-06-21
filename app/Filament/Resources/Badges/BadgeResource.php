@@ -16,7 +16,9 @@ class BadgeResource extends Resource
 {
     protected static ?string $model = Badge::class;
     protected static ?string $slug = 'badges';
-    protected static string | \UnitEnum | null $navigationGroup = 'Gameplay';
+    protected static ?string $modelLabel = 'Odznaka';
+    protected static ?string $pluralModelLabel = 'Odznaki';
+    protected static string | \UnitEnum | null $navigationGroup = 'Rozgrywka';
 
     public static function form(Schema $schema): Schema
     {

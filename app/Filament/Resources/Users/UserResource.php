@@ -18,8 +18,12 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
+    protected static ?string $modelLabel = 'Użytkownik';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Administration';
+    protected static ?string $pluralModelLabel = 'Użytkownicy';
+
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Administracja';
 
     protected static ?string $recordTitleAttribute = 'name';
 

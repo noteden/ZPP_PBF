@@ -25,31 +25,37 @@ class PostReportResource extends Resource
 
     protected static ?string $slug = 'post-reports';
 
+    protected static ?string $modelLabel = 'Zgłoszenie';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Forum System';
+    protected static ?string $pluralModelLabel = 'Zgłoszenia';
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Forum';
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 Select::make('user_id')
+                    ->label('Zgłaszający')
                     ->relationship('user', 'name')
                     ->searchable()
                     ->required(),
 
                 TextInput::make('post_id')
+                    ->label('ID posta')
                     ->required()
                     ->integer(),
 
                 TextInput::make('reason')
+                    ->label('Powód')
                     ->required(),
 
                 TextEntry::make('created_at')
-                    ->label('Created Date')
+                    ->label('Data utworzenia')
                     ->dateTime(),
 
                 TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
+                    ->label('Data modyfikacji')
                     ->dateTime(),
             ]);
     }

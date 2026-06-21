@@ -25,8 +25,11 @@ class DocumentsResource extends Resource
 
     protected static ?string $slug = 'documents';
 
+    protected static ?string $modelLabel = 'Dokument';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Administration';
+    protected static ?string $pluralModelLabel = 'Dokumenty';
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Administracja';
 
     public static function form(Schema $schema): Schema
     {
@@ -59,11 +62,11 @@ class DocumentsResource extends Resource
                     ->required(),
 
                 TextEntry::make('created_at')
-                    ->label('Created Date')
+                    ->label('Data utworzenia')
                     ->dateTime(),
 
                 TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
+                    ->label('Data modyfikacji')
                     ->dateTime(),
             ]);
     }

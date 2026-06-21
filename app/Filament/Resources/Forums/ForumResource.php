@@ -25,8 +25,11 @@ class ForumResource extends Resource
 
     protected static ?string $slug = 'forums';
 
+    protected static ?string $modelLabel = 'Forum';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Forum System';
+    protected static ?string $pluralModelLabel = 'Fora';
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Forum';
 
     public static function form(Schema $schema): Schema
     {
@@ -44,11 +47,11 @@ class ForumResource extends Resource
                     ->required(),
 
                 TextEntry::make('created_at')
-                    ->label('Created Date')
+                    ->label('Data utworzenia')
                     ->dateTime(),
 
                 TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
+                    ->label('Data modyfikacji')
                     ->dateTime(),
             ]);
     }
@@ -56,17 +59,12 @@ class ForumResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'FORUM', 'field' => 'name', 'subfield' => 'category.name', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'forum'],
-                    ['label' => 'DESCRIPTION', 'field' => 'description', 'width' => 'col-span-12 md:col-span-6'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nazwa')
                     ->searchable(),
                 TextColumn::make('category.name')
+                    ->label('Kategoria')
                     ->searchable(),
             ])
             ->filters([

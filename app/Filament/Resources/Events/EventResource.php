@@ -26,8 +26,11 @@ class EventResource extends Resource
 
     protected static ?string $slug = 'events';
 
+    protected static ?string $modelLabel = 'Wydarzenie';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Gameplay';
+    protected static ?string $pluralModelLabel = 'Wydarzenia';
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Rozgrywka';
 
     public static function form(Schema $schema): Schema
     {
@@ -50,11 +53,11 @@ class EventResource extends Resource
                 DatePicker::make('date'),
 
                 TextEntry::make('created_at')
-                    ->label('Created Date')
+                    ->label('Data utworzenia')
                     ->dateTime(),
 
                 TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
+                    ->label('Data modyfikacji')
                     ->dateTime(),
             ]);
     }
@@ -62,18 +65,12 @@ class EventResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'EVENT NAME', 'field' => 'name', 'subfield' => 'date', 'width' => 'col-span-12 md:col-span-5', 'icon' => 'event'],
-                    ['label' => 'TYPE', 'field' => 'type', 'width' => 'col-span-12 md:col-span-3'],
-                    ['label' => 'ORGANIZER', 'field' => 'user.name', 'width' => 'col-span-12 md:col-span-4'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nazwa')
                     ->searchable(),
                 TextColumn::make('user.name')
+                    ->label('Organizator')
                     ->searchable(),
             ])
             ->filters([

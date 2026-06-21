@@ -23,11 +23,11 @@ class EquipmentResource extends Resource
     protected static ?string $slug = 'equipment';
 
 
-    protected static ?string $modelLabel = 'Equipment';
+    protected static ?string $modelLabel = 'Ekwipunek';
 
-    protected static ?string $pluralModelLabel = 'Equipment';
+    protected static ?string $pluralModelLabel = 'Ekwipunek';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Game Mechanics';
+    protected static string | \UnitEnum | null $navigationGroup = 'Mechanika gry';
 
     public static function form(Schema $schema): Schema
     {
@@ -47,12 +47,12 @@ class EquipmentResource extends Resource
                     ->required(),
 
                 \Filament\Forms\Components\KeyValue::make('statistic')
-                    ->label('STATISTICS')
+                    ->label('STATYSTYKI')
                     ->required()
                     ->columnSpanFull(),
 
                 TextEntry::make('created_at')
-                    ->label('Created Date')
+                    ->label('Data utworzenia')
                     ->dateTime(),
             ]);
     }
@@ -60,18 +60,12 @@ class EquipmentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'EQUIPMENT', 'field' => 'name', 'subfield' => 'type', 'width' => 'col-span-12 md:col-span-4', 'icon' => 'swords'],
-                    ['label' => 'DESCRIPTION', 'field' => 'description', 'width' => 'col-span-12 md:col-span-5'],
-                    ['label' => 'WEIGHT', 'field' => 'weight', 'width' => 'col-span-12 md:col-span-3'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nazwa')
                     ->searchable(),
                 TextColumn::make('type')
+                    ->label('Typ')
                     ->searchable(),
             ])
             ->filters([

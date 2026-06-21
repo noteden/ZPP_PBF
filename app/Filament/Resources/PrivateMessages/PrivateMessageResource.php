@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -26,8 +27,12 @@ class PrivateMessageResource extends Resource
 
     protected static ?string $slug = 'private-messages';
 
+    protected static ?string $modelLabel = 'Wiadomość prywatna';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Communication';
+    protected static ?string $pluralModelLabel = 'Wiadomości prywatne';
+
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Komunikacja';
 
     public static function form(Schema $schema): Schema
     {
@@ -49,11 +54,11 @@ class PrivateMessageResource extends Resource
                 Checkbox::make('is_read'),
 
                 TextEntry::make('created_at')
-                    ->label('Created Date')
+                    ->label('Data utworzenia')
                     ->dateTime(),
 
                 TextEntry::make('updated_at')
-                    ->label('Last Modified Date')
+                    ->label('Data modyfikacji')
                     ->dateTime(),
             ]);
     }
@@ -61,19 +66,13 @@ class PrivateMessageResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'FROM / TO', 'field' => 'senderUser.name', 'subfield' => 'receiverUser.name', 'width' => 'col-span-12 md:col-span-4', 'icon' => 'mail'],
-                    ['label' => 'CONTENT PREVIEW', 'field' => 'content', 'width' => 'col-span-12 md:col-span-5'],
-                    ['label' => 'READ', 'field' => 'is_read', 'width' => 'col-span-12 md:col-span-3', 'type' => 'toggle'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('senderUser.name')
                     ->searchable(),
                 TextColumn::make('receiverUser.name')
                     ->searchable(),
+                ToggleColumn::make('is_read')
+                    ->label('Przeczytane'),
             ])
             ->filters([
                 //

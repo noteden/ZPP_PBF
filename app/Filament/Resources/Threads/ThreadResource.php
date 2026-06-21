@@ -25,8 +25,12 @@ class ThreadResource extends Resource
 
     protected static ?string $slug = 'threads';
 
+    protected static ?string $modelLabel = 'Wątek';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Forum System';
+    protected static ?string $pluralModelLabel = 'Wątki';
+
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Forum';
 
     public static function form(Schema $schema): Schema
     {
@@ -44,25 +48,12 @@ class ThreadResource extends Resource
                     ->relationship('forum', 'name')
                     ->searchable()
                     ->required(),
-
-                Select::make('charakter_id')
-                    ->label('CHARACTER')
-                    ->relationship('charakter', 'name')
-                    ->searchable()
-                    ->required(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'THREAD TITLE', 'field' => 'name', 'subfield' => 'forum.name', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'topic'],
-                    ['label' => 'AUTHOR / CHAR', 'field' => 'user.name', 'subfield' => 'charakter.name', 'width' => 'col-span-12 md:col-span-6'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
@@ -95,12 +86,12 @@ class ThreadResource extends Resource
      */
     public static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->with(['user', 'forum', 'charakter']);
+        return parent::getGlobalSearchEloquentQuery()->with(['user', 'forum']);
     }
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['name', 'user.name', 'forum.name', 'charakter.name'];
+        return ['name', 'user.name', 'forum.name'];
     }
 
     /**
@@ -116,10 +107,6 @@ class ThreadResource extends Resource
 
         if ($record->forum) {
             $details['Forum'] = $record->forum->name;
-        }
-
-        if ($record->charakter) {
-            $details['Charakter'] = $record->charakter->name;
         }
 
         return $details;

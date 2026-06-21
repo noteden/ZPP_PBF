@@ -25,28 +25,34 @@ class PostResource extends Resource
 
     protected static ?string $slug = 'posts';
 
+    protected static ?string $modelLabel = 'Post';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Forum System';
+    protected static ?string $pluralModelLabel = 'Posty';
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Forum';
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 MarkdownEditor::make('content')
+                    ->label('Treść')
                     ->required(),
 
                 Select::make('thread_id')
+                    ->label('Wątek')
                     ->relationship('thread', 'name')
                     ->searchable()
                     ->required(),
 
                 Select::make('user_id')
+                    ->label('Użytkownik')
                     ->relationship('user', 'name')
                     ->searchable()
                     ->required(),
 
                 Select::make('charakter_id')
-                    ->label('CHARACTER')
+                    ->label('POSTAĆ')
                     ->relationship('charakter', 'name')
                     ->searchable()
                     ->required(),
@@ -56,19 +62,15 @@ class PostResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'POST CONTENT', 'field' => 'content', 'subfield' => 'thread.name', 'width' => 'col-span-7', 'icon' => 'chat'],
-                    ['label' => 'AUTHOR / CHAR', 'field' => 'user.name', 'subfield' => 'charakter.name', 'width' => 'col-span-5'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('content')
+                    ->label('Treść')
                     ->searchable(),
                 TextColumn::make('thread.name')
+                    ->label('Wątek')
                     ->searchable(),
                 TextColumn::make('user.name')
+                    ->label('Użytkownik')
                     ->searchable(),
             ])
             ->filters([
