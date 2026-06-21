@@ -17,6 +17,16 @@ class ActivityLogList extends Component
     public string $filterAction  = '';
     public string $filterSubject = '';
 
+    public function getListeners(): array
+    {
+        return ['echo:activity,.ResourceChanged' => 'refreshList'];
+    }
+
+    public function refreshList(): void
+    {
+        unset($this->logs);
+    }
+
     public function updatingFilterAction(): void
     {
         $this->resetPage();

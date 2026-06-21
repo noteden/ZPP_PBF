@@ -20,7 +20,7 @@ class NewThreadReply extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'author'    => $this->post->user->name,
+            'author'    => $this->post->user?->name ?? 'Nieznany',
             'thread_id' => $this->post->thread_id,
             'post_id'   => $this->post->id,
             'preview'   => mb_substr($this->post->content, 0, 100),

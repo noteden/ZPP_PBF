@@ -7,6 +7,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class UserForm
@@ -29,10 +30,19 @@ class UserForm
                     ))
                     ->required(),
 
+                Toggle::make('approved')
+                    ->label('Konto zatwierdzone')
+                    ->helperText('Niezatwierdzeni gracze nie mają dostępu do gry.')
+                    ->default(false),
+
                 DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
                     ->password()
-                    ->required(),
+                    ->revealable()
+                    ->helperText('Zostaw puste, aby nie zmieniać hasła użytkownika.')
+                    // Wymagane tylko przy tworzeniu; przy edycji puste = bez zmiany hasła.
+                    ->required(fn (string $operation): bool => $operation === 'create')
+                    ->dehydrated(fn (?string $state): bool => filled($state)),
                 Textarea::make('two_factor_secret')
                     ->columnSpanFull(),
                 Textarea::make('two_factor_recovery_codes')

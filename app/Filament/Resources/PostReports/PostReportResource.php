@@ -57,16 +57,20 @@ class PostReportResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'REPORTED BY', 'field' => 'user.name', 'subfield' => 'reason', 'width' => 'col-span-12 md:col-span-8', 'icon' => 'report'],
-                    ['label' => 'POST ID', 'field' => 'post_id', 'width' => 'col-span-12 md:col-span-4'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('user.name')
+                    ->label('Zgłaszający')
                     ->searchable(),
+                TextColumn::make('reason')
+                    ->label('Powód')
+                    ->limit(50),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge(),
+                TextColumn::make('created_at')
+                    ->label('Zgłoszono')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 //

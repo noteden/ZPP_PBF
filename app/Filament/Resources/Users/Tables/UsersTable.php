@@ -2,10 +2,14 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class UsersTable
@@ -13,26 +17,31 @@ class UsersTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'USER', 'field' => 'name', 'subfield' => 'email', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'person'],
-                    ['label' => 'ROLA', 'field' => 'role', 'width' => 'col-span-12 md:col-span-2'],
-                    ['label' => 'VERIFIED AT', 'field' => 'email_verified_at', 'width' => 'col-span-12 md:col-span-2'],
-                    ['label' => 'JOINED', 'field' => 'created_at', 'width' => 'col-span-12 md:col-span-2'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
                     ->searchable(),
+                IconColumn::make('approved')
+                    ->label('Zatwierdzony')
+                    ->boolean(),
             ])
             ->filters([
-                //
+                TernaryFilter::make('approved')
+                    ->label('Zatwierdzenie')
+                    ->placeholder('Wszyscy')
+                    ->trueLabel('Zatwierdzeni')
+                    ->falseLabel('Oczekujący'),
             ])
             ->bulkActions([])
             ->recordActions([
+                Action::make('approve')
+                    ->label('Zatwierdź')
+                    ->icon('heroicon-o-check')
+                    ->color('success')
+                    ->visible(fn (User $record): bool => ! $record->approved)
+                    ->requiresConfirmation()
+                    ->action(fn (User $record) => $record->update(['approved' => true])),
                 EditAction::make(),
             ]);
     }

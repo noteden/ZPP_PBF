@@ -38,14 +38,6 @@ class BadgeResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'BADGE', 'field' => 'name', 'subfield' => 'description', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'badge'],
-                    ['label' => 'HOLDERS', 'field' => 'users_count', 'width' => 'col-span-12 md:col-span-3'],
-                    ['label' => 'ICON', 'field' => 'icon', 'width' => 'col-span-12 md:col-span-3'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('users_count')->counts('users'),

@@ -16,21 +16,48 @@
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="envelope" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        Wiadomości
-                        @php $unreadMessages = auth()->user()?->receivedMessages()->where('is_read', false)->count() ?? 0; @endphp
-                        @if ($unreadMessages > 0)
-                            <flux:badge color="blue" size="sm" class="ms-auto">{{ $unreadMessages }}</flux:badge>
-                        @endif
+                    <flux:sidebar.item icon="chat-bubble-left-right" :href="route('forum.index')" :current="request()->routeIs('forum.*')" wire:navigate>
+                        Forum
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="bell" :href="route('notifications')" :current="request()->routeIs('notifications')" wire:navigate>
-                        Powiadomienia
-                        @php $unreadNotif = auth()->user()?->unreadNotifications()->count() ?? 0; @endphp
-                        @if ($unreadNotif > 0)
-                            <flux:badge color="red" size="sm" class="ms-auto">{{ $unreadNotif }}</flux:badge>
-                        @endif
+                    <flux:sidebar.item icon="user-group" :href="route('character.index')" :current="request()->routeIs('character.*')" wire:navigate>
+                        Moje postacie
                     </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="map" :href="route('missions.index')" :current="request()->routeIs('missions.*')" wire:navigate>
+                        Misje
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="calendar-days" :href="route('events.index')" :current="request()->routeIs('events.*')" wire:navigate>
+                        Wydarzenia
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="book-open" :href="route('world-logs.index')" :current="request()->routeIs('world-logs.*')" wire:navigate>
+                        Kronika świata
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="cube" :href="route('tools.conflict')" :current="request()->routeIs('tools.conflict')" wire:navigate>
+                        Rozstrzyganie konfliktów
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="sparkles" :href="route('badges.index')" :current="request()->routeIs('badges.*')" wire:navigate>
+                        Odznaki
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="trophy" :href="route('leaderboard.index')" :current="request()->routeIs('leaderboard.*')" wire:navigate>
+                        Ranking
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="book-open" :href="route('library.index')" :current="request()->routeIs('library.*')" wire:navigate>
+                        Biblioteka
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="light-bulb" :href="route('suggestions.index')" :current="request()->routeIs('suggestions.*')" wire:navigate>
+                        Sugestie
+                    </flux:sidebar.item>
+
+                    {{-- Liczniki live (WebSocket) --}}
+                    <livewire:notifications.counters />
 
                     @if (auth()->user()?->isModerator())
                         <flux:sidebar.item icon="clock" :href="route('activity-log')" :current="request()->routeIs('activity-log')" wire:navigate>
@@ -39,7 +66,7 @@
 
                         <flux:sidebar.item icon="shield-check" :href="route('moderation')" :current="request()->routeIs('moderation')" wire:navigate>
                             Moderacja
-                            @php $pending = \App\Models\PostReport::where('status', 'oczekujące')->count(); @endphp
+                            @php $pending = \App\Models\PostReport::where('status', \App\Enums\ReportStatus::Pending->value)->count(); @endphp
                             @if ($pending > 0)
                                 <flux:badge color="yellow" size="sm" class="ms-auto">{{ $pending }}</flux:badge>
                             @endif
@@ -51,12 +78,14 @@
             <flux:spacer />
 
             <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                    {{ __('Repository') }}
+                {{-- Przełącznik motywu (jasny / ciemny) --}}
+                <flux:sidebar.item x-data x-cloak icon="sun" x-show="$flux.dark"
+                                   x-on:click.prevent="$flux.dark = false" href="#" class="cursor-pointer">
+                    Tryb jasny
                 </flux:sidebar.item>
-
-                <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                    {{ __('Documentation') }}
+                <flux:sidebar.item x-data x-cloak icon="moon" x-show="!$flux.dark"
+                                   x-on:click.prevent="$flux.dark = true" href="#" class="cursor-pointer">
+                    Tryb ciemny
                 </flux:sidebar.item>
             </flux:sidebar.nav>
 

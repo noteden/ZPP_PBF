@@ -32,10 +32,12 @@ class Post extends Model
     public function charakter(): BelongsTo
     {
         return $this->belongsTo(Charakter::class);
-        return $this->belongsTo(Charakter::class, 'charakter_id');
     }
 
-    public function posts(): BelongsToMany
+    /**
+     * Posty cytowane w tym poście.
+     */
+    public function quotedPosts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class, 'post_post', 'post_id', 'quoted_post_id');
     }

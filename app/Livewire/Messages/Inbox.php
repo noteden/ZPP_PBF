@@ -17,6 +17,17 @@ class Inbox extends Component
     public ?int $selectedUserId = null;
     public string $newMessageContent = '';
 
+    public function getListeners(): array
+    {
+        // Nowa wiadomość tworzy powiadomienie -> sygnał na kanale użytkownika.
+        return ['echo-private:App.Models.User.'.Auth::id().',.NotificationReceived' => 'refreshList'];
+    }
+
+    public function refreshList(): void
+    {
+        unset($this->conversations);
+    }
+
     #[Computed]
     public function conversations(): Collection
     {

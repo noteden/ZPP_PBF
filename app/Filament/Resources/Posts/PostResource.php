@@ -56,13 +56,6 @@ class PostResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'POST CONTENT', 'field' => 'content', 'subfield' => 'thread.name', 'width' => 'col-span-7', 'icon' => 'chat'],
-                    ['label' => 'AUTHOR / CHAR', 'field' => 'user.name', 'subfield' => 'charakter.name', 'width' => 'col-span-5'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('content')
                     ->searchable(),

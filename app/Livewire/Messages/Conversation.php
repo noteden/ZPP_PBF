@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Messages;
 
+use App\Events\MessageSent;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use App\Notifications\NewPrivateMessage;
@@ -16,6 +17,29 @@ use Livewire\Component;
 class Conversation extends Component
 {
     public int $partnerId;
+
+    /** Nasłuch real-time: nowa wiadomość w tej konwersacji. */
+    public function getListeners(): array
+    {
+        $ids = [(int) Auth::id(), $this->partnerId];
+        sort($ids);
+
+        return [
+            "echo-private:conversation.{$ids[0]}.{$ids[1]},.MessageSent" => 'onMessageReceived',
+        ];
+    }
+
+    public function onMessageReceived(): void
+    {
+        // Oznacz nowe wiadomości od rozmówcy jako przeczytane i odśwież listę.
+        PrivateMessage::where('sender_user_id', $this->partnerId)
+            ->where('receiver_user_id', Auth::id())
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        unset($this->messages);
+        $this->dispatch('message-sent');
+    }
 
     public function mount(User $partner): void
     {
@@ -73,6 +97,9 @@ class Conversation extends Component
 
         $message->load('senderUser');
         $this->partner->notify(new NewPrivateMessage($message));
+
+        // Real-time: nadaj wiadomość na prywatny kanał konwersacji.
+        MessageSent::dispatch($message);
 
         unset($this->messages);
         $this->dispatch('message-sent');

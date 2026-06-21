@@ -8,7 +8,9 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
@@ -36,6 +38,23 @@ class DocumentsResource extends Resource
                 MarkdownEditor::make('content')
                     ->required(),
 
+                Select::make('category')
+                    ->label('Kategoria')
+                    ->options([
+                        'lore'      => 'Lore / fabuła',
+                        'regulamin' => 'Regulamin',
+                        'mechanika' => 'Mechanika (wpływ wydarzeń)',
+                        'mapa'      => 'Mapa',
+                        'inne'      => 'Inne',
+                    ])
+                    ->default('lore'),
+
+                FileUpload::make('file_path')
+                    ->label('Załącznik (mapa / PDF / grafika)')
+                    ->directory('documents')
+                    ->acceptedFileTypes(['application/pdf', 'image/png', 'image/jpeg', 'image/webp'])
+                    ->maxSize(10240),
+
                 TextInput::make('published_add')
                     ->required(),
 
@@ -52,16 +71,17 @@ class DocumentsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'DOCUMENT NAME', 'field' => 'name', 'subfield' => 'published_add', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'article'],
-                    ['label' => 'PREVIEW', 'field' => 'content', 'width' => 'col-span-12 md:col-span-6'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nazwa')
                     ->searchable(),
+                TextColumn::make('category')
+                    ->label('Kategoria')
+                    ->badge(),
+                TextColumn::make('created_at')
+                    ->label('Dodano')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 //

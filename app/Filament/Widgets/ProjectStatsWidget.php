@@ -2,30 +2,40 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Charakter;
 use App\Models\CharakterSheet;
 use App\Models\Mission;
 use App\Models\Post;
 use App\Models\User;
-use Filament\Widgets\Widget;
+use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class ProjectStatsWidget extends Widget
+class ProjectStatsWidget extends StatsOverviewWidget
 {
     protected static ?int $sort = 2;
 
-    protected int | string | array $columnSpan = [
-        'md' => 12,
-        'lg' => 4,
-    ];
-
-    protected string $view = 'filament.widgets.project-stats-widget';
-
-    protected function getViewData(): array
+    protected function getStats(): array
     {
         return [
-            'usersCount' => User::count(),
-            'missionsCount' => Mission::count(),
-            'postsCount' => Post::count(),
-            'charakterSheetsCount' => CharakterSheet::count(),
+            Stat::make('Gracze', User::count())
+                ->description('Zarejestrowani użytkownicy')
+                ->descriptionIcon('heroicon-m-users')
+                ->color('primary'),
+
+            Stat::make('Postacie', Charakter::count())
+                ->description(CharakterSheet::count().' kart postaci')
+                ->descriptionIcon('heroicon-m-user-group')
+                ->color('success'),
+
+            Stat::make('Posty', Post::count())
+                ->description('Wpisy na forum')
+                ->descriptionIcon('heroicon-m-chat-bubble-left-right')
+                ->color('info'),
+
+            Stat::make('Misje', Mission::count())
+                ->description('Zgłoszone misje')
+                ->descriptionIcon('heroicon-m-map')
+                ->color('warning'),
         ];
     }
 }

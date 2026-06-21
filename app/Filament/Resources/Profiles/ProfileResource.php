@@ -53,16 +53,15 @@ class ProfileResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'PROFILE NAME', 'field' => 'name', 'subfield' => 'user_id', 'width' => 'col-span-12 md:col-span-8', 'icon' => 'badge'],
-                    ['label' => 'AGE', 'field' => 'age', 'width' => 'col-span-12 md:col-span-4'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nazwa')
                     ->searchable(),
+                TextColumn::make('age')
+                    ->label('Wiek'),
+                TextColumn::make('user.name')
+                    ->label('Użytkownik')
+                    ->default('—'),
             ])
             ->filters([
                 //

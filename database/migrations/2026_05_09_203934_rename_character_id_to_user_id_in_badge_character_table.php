@@ -25,8 +25,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::rename('badge_user', 'badge_character');
+
         Schema::table('badge_character', function (Blueprint $table) {
-            //
+            $table->renameColumn('user_id', 'character_id');
         });
     }
 };

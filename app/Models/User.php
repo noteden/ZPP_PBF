@@ -15,10 +15,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
-#[Fillable(['name', 'email', 'password', 'role'])]
+#[Fillable(['name', 'email', 'password', 'role', 'approved', 'last_seen_at'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
+    /** Próg (w minutach) uznania użytkownika za online. */
+    public const ONLINE_THRESHOLD_MINUTES = 5;
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
@@ -57,6 +60,18 @@ class User extends Authenticatable
         return $this->isAdmin() || $this->isGameMaster();
     }
 
+    public function isApproved(): bool
+    {
+        // Każde konto (także MG zgłoszony przy rejestracji) wymaga zatwierdzenia.
+        return (bool) $this->approved;
+    }
+
+    public function isOnline(): bool
+    {
+        return $this->last_seen_at !== null
+            && $this->last_seen_at->gt(now()->subMinutes(self::ONLINE_THRESHOLD_MINUTES));
+    }
+
     public function badges()
     {
         return $this->belongsToMany(Badge::class, 'badge_user', 'user_id', 'badge_id');
@@ -65,6 +80,11 @@ class User extends Authenticatable
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class, 'user_id');
+    }
+
+    public function charakters(): HasMany
+    {
+        return $this->hasMany(Charakter::class);
     }
 
     public function getRoleLabel(): string
@@ -76,6 +96,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_seen_at'      => 'datetime',
+            'approved'          => 'boolean',
             'password'          => 'hashed',
             'role'              => UserRole::class,
         ];

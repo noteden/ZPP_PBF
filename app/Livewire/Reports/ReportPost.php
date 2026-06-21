@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Reports;
 
+use App\Enums\ReportStatus;
 use App\Models\Post;
 use App\Models\PostReport;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +39,7 @@ class ReportPost extends Component
             'post_id' => $this->post->id,
             'user_id' => Auth::id(),
             'reason'  => $this->reason,
-            'status'  => 'oczekujące',
+            'status'  => ReportStatus::Pending->value,
         ]);
 
         $this->reason    = '';

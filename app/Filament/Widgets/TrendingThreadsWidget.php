@@ -3,24 +3,43 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Thread;
-use Filament\Widgets\Widget;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Filament\Widgets\TableWidget as BaseWidget;
 
-class TrendingThreadsWidget extends Widget
+class TrendingThreadsWidget extends BaseWidget
 {
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 4;
 
-    protected int | string | array $columnSpan = [
-        'md' => 12,
-        'lg' => 4,
-    ];
+    protected int | string | array $columnSpan = 'full';
 
-    protected string $view = 'filament.widgets.trending-threads-widget';
+    protected static ?string $heading = 'Popularne wątki';
 
-    public function getTrending()
+    public function table(Table $table): Table
     {
-        return Thread::withCount('posts')
-            ->orderBy('posts_count', 'desc')
-            ->limit(3)
-            ->get();
+        return $table
+            ->query(
+                Thread::query()
+                    ->withCount('posts')
+                    ->where('archived', false)
+                    ->orderByDesc('posts_count')
+                    ->limit(5)
+            )
+            ->paginated(false)
+            ->columns([
+                TextColumn::make('name')
+                    ->label('Wątek')
+                    ->limit(50)
+                    ->icon('heroicon-m-chat-bubble-left'),
+
+                TextColumn::make('user.name')
+                    ->label('Założyciel')
+                    ->color('gray'),
+
+                TextColumn::make('posts_count')
+                    ->label('Posty')
+                    ->badge()
+                    ->color('primary'),
+            ]);
     }
 }

@@ -11,6 +11,18 @@ use Livewire\Component;
 #[Title('Powiadomienia')]
 class NotificationList extends Component
 {
+    public function getListeners(): array
+    {
+        return [
+            'echo-private:App.Models.User.'.Auth::id().',.NotificationReceived' => 'onNotification',
+        ];
+    }
+
+    public function onNotification(): void
+    {
+        unset($this->notifications, $this->unreadCount);
+    }
+
     public function markAllRead(): void
     {
         Auth::user()->unreadNotifications->markAsRead();

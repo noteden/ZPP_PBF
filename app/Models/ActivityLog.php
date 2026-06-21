@@ -29,5 +29,8 @@ class ActivityLog extends Model
             'subject_id'   => $subject->getKey(),
             'description'  => $description,
         ]);
+
+        // Live: log aktywności dla moderatorów.
+        \App\Events\ResourceChanged::dispatch('activity');
     }
 }

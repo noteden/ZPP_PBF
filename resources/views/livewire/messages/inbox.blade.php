@@ -17,7 +17,12 @@
                 <a href="{{ route('messages.conversation', $conv->partner->id) }}" wire:navigate
                    class="flex items-center gap-4 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition">
 
-                    <flux:avatar :name="$conv->partner->name" class="shrink-0" />
+                    <div class="relative shrink-0">
+                        <flux:avatar :name="$conv->partner->name" />
+                        <span class="absolute -bottom-0.5 -right-0.5 block h-3 w-3 rounded-full ring-2 ring-white dark:ring-zinc-900
+                            {{ $conv->partner->isOnline() ? 'bg-green-500' : 'bg-zinc-400' }}"
+                            title="{{ $conv->partner->isOnline() ? 'Online' : 'Offline' }}"></span>
+                    </div>
 
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center justify-between gap-2">

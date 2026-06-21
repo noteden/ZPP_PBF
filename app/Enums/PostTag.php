@@ -8,6 +8,12 @@ enum PostTag: string
     case Spoiler   = 'spoiler';
     case Important = 'ważne';
 
+    /** Reguła walidacji Laravel dopuszczająca wszystkie tagi. */
+    public static function validationRule(): string
+    {
+        return 'in:'.implode(',', array_column(self::cases(), 'value'));
+    }
+
     public function label(): string
     {
         return match($this) {

@@ -8,6 +8,8 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
@@ -32,8 +34,22 @@ class MissionResource extends Resource
                 TextInput::make('name')
                     ->required(),
 
-                TextInput::make('description')
+                MarkdownEditor::make('description')
                     ->required(),
+
+                Select::make('status')
+                    ->label('Status werdyktu')
+                    ->options([
+                        'proposed' => 'Zgłoszona',
+                        'approved' => 'Zatwierdzona',
+                        'rejected' => 'Odrzucona',
+                    ])
+                    ->default('proposed'),
+
+                Select::make('proposed_by')
+                    ->label('Zgłaszający')
+                    ->relationship('proposer', 'name')
+                    ->searchable(),
 
                 TextEntry::make('created_at')
                     ->label('Created Date')
@@ -48,16 +64,20 @@ class MissionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'MISSION NAME', 'field' => 'name', 'width' => 'col-span-12 md:col-span-5', 'icon' => 'flag_circle'],
-                    ['label' => 'DESCRIPTION', 'field' => 'description', 'width' => 'col-span-12 md:col-span-7'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nazwa')
                     ->searchable(),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge(),
+                TextColumn::make('proposer.name')
+                    ->label('Zgłaszający')
+                    ->default('—'),
+                TextColumn::make('created_at')
+                    ->label('Utworzono')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 //

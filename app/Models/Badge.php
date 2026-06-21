@@ -12,6 +12,9 @@ class Badge extends Model
 {
     use HasFactory;
 
+    /** Nazwa odznaki przyznawanej automatycznie za pierwszy post postacią. */
+    public const FIRST_POST = 'Pierwszy Post';
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'badge_user', 'badge_id', 'user_id');

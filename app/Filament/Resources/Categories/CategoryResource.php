@@ -50,14 +50,6 @@ class CategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
-                'records' => $records,
-                'headers' => [
-                    ['label' => 'NAME', 'field' => 'name', 'width' => 'col-span-12 md:col-span-5', 'icon' => 'menu_book'],
-                    ['label' => 'DESCRIPTION', 'field' => 'description', 'width' => 'col-span-12 md:col-span-4'],
-                    ['label' => 'ONLY FOR GM', 'field' => 'OnlyforGM', 'width' => 'col-span-12 md:col-span-3', 'type' => 'toggle'],
-                ]
-            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),

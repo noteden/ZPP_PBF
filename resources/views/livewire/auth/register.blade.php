@@ -30,6 +30,19 @@
                 placeholder="email@example.com"
             />
 
+            <!-- Rola -->
+            <flux:select
+                name="role"
+                :label="__('Chcę dołączyć jako')"
+                :value="old('role', 'gracz')"
+            >
+                <flux:select.option value="gracz">Gracz</flux:select.option>
+                <flux:select.option value="mg">Mistrz Gry</flux:select.option>
+            </flux:select>
+            <flux:text class="-mt-3 text-xs text-zinc-400">
+                Konto wymaga zatwierdzenia przez administratora przed pierwszym zalogowaniem.
+            </flux:text>
+
             <!-- Password -->
             <flux:input
                 name="password"

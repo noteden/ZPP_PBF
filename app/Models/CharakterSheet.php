@@ -20,12 +20,14 @@ class CharakterSheet extends Model
 
     public function skills(): BelongsToMany
     {
-        return $this->belongsToMany(Skill::class, 'charakter_sheet_skill', 'charakter_sheet_id', 'skill_id');
+        return $this->belongsToMany(Skill::class, 'charakter_sheet_skill', 'charakter_sheet_id', 'skill_id')
+            ->withPivot('level');
     }
 
     public function equipment(): BelongsToMany
     {
-        return $this->belongsToMany(Equipment::class, 'charakter_sheet_equipment', 'charakter_sheet_id', 'equipment_id');
+        return $this->belongsToMany(Equipment::class, 'charakter_sheet_equipment', 'charakter_sheet_id', 'equipment_id')
+            ->withPivot(['number', 'is_equipped']);
     }
 
     protected function casts(): array

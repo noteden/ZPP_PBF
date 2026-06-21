@@ -15,7 +15,17 @@ class ModerationPanel extends Component
 {
     use WithPagination;
 
-    public string $filter = 'oczekujące';
+    public string $filter = ReportStatus::Pending->value;
+
+    public function getListeners(): array
+    {
+        return ['echo:moderators,.ResourceChanged' => 'refreshList'];
+    }
+
+    public function refreshList(): void
+    {
+        unset($this->reports);
+    }
 
     public function updatingFilter(): void
     {

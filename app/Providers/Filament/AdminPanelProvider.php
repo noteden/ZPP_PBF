@@ -40,14 +40,6 @@ class AdminPanelProvider extends PanelProvider
                     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
                 ')
             )
-            ->renderHook(
-                \Filament\View\PanelsRenderHook::SIDEBAR_FOOTER,
-                fn () => view('filament.components.sidebar-footer')
-            )
-            ->renderHook(
-                \Filament\View\PanelsRenderHook::FOOTER,
-                fn () => view('filament.components.footer')
-            )
             ->navigationGroups([
                 \Filament\Navigation\NavigationGroup::make()
                     ->label('Forum System')

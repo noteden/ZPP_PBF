@@ -20,7 +20,7 @@ class NewPrivateMessage extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'sender'     => $this->message->senderUser->name,
+            'sender'     => $this->message->senderUser?->name ?? 'Nieznany',
             'message_id' => $this->message->id,
             'preview'    => mb_substr($this->message->content, 0, 100),
         ];
