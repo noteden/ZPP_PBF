@@ -114,6 +114,14 @@ class CharakterResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'CHARACTER', 'field' => 'name', 'subfield' => 'race', 'width' => 'col-span-12 md:col-span-5', 'icon' => 'person_book'],
+                    ['label' => 'ORIGIN', 'field' => 'origin', 'width' => 'col-span-12 md:col-span-4'],
+                    ['label' => 'PLAYER', 'field' => 'user.name', 'width' => 'col-span-12 md:col-span-3'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),

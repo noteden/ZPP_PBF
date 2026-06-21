@@ -56,6 +56,13 @@ class ForumResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'FORUM', 'field' => 'name', 'subfield' => 'category.name', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'forum'],
+                    ['label' => 'DESCRIPTION', 'field' => 'description', 'width' => 'col-span-12 md:col-span-6'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),

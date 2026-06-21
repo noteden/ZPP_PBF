@@ -60,6 +60,14 @@ class EquipmentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'EQUIPMENT', 'field' => 'name', 'subfield' => 'type', 'width' => 'col-span-12 md:col-span-4', 'icon' => 'swords'],
+                    ['label' => 'DESCRIPTION', 'field' => 'description', 'width' => 'col-span-12 md:col-span-5'],
+                    ['label' => 'WEIGHT', 'field' => 'weight', 'width' => 'col-span-12 md:col-span-3'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),

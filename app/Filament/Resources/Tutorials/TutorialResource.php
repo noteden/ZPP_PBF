@@ -49,6 +49,13 @@ class TutorialResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'TUTORIAL NAME', 'field' => 'name', 'width' => 'col-span-12 md:col-span-5', 'icon' => 'school'],
+                    ['label' => 'CONTENT PREVIEW', 'field' => 'content', 'width' => 'col-span-12 md:col-span-7'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),

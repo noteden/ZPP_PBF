@@ -62,6 +62,14 @@ class EventResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'EVENT NAME', 'field' => 'name', 'subfield' => 'date', 'width' => 'col-span-12 md:col-span-5', 'icon' => 'event'],
+                    ['label' => 'TYPE', 'field' => 'type', 'width' => 'col-span-12 md:col-span-3'],
+                    ['label' => 'ORGANIZER', 'field' => 'user.name', 'width' => 'col-span-12 md:col-span-4'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),

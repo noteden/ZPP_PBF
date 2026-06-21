@@ -57,6 +57,13 @@ class SuggestionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'SUGGESTION TITLE', 'field' => 'name', 'subfield' => 'user.name', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'lightbulb'],
+                    ['label' => 'CONTENT', 'field' => 'content', 'width' => 'col-span-12 md:col-span-6'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),

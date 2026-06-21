@@ -56,6 +56,13 @@ class ThreadResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->content(fn ($records) => view('filament.resources.common.mythic-table', [
+                'records' => $records,
+                'headers' => [
+                    ['label' => 'THREAD TITLE', 'field' => 'name', 'subfield' => 'forum.name', 'width' => 'col-span-12 md:col-span-6', 'icon' => 'topic'],
+                    ['label' => 'AUTHOR / CHAR', 'field' => 'user.name', 'subfield' => 'charakter.name', 'width' => 'col-span-12 md:col-span-6'],
+                ]
+            ]))
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
